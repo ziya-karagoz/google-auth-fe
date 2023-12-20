@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { signinWithGoogle } from "../lib/configs/firebase-config";
+import { signinWithFacebook, signinWithGoogle } from "../lib/configs/firebase-config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
     const navigate = useNavigate();
-    async function handleSignIn(): Promise<void> {
+    async function handleGoogleSignIn(): Promise<void> {
         try {
             // this function is the one when client open the google signin popup
             const userCredentials = await signinWithGoogle();
@@ -28,6 +28,29 @@ const HomePage = () => {
         }
     }
 
+    async function handleFacebookSignIn(): Promise<void> {
+        try {
+            // this function is the one when client open the google signin popup
+            const userCredentials = await signinWithFacebook();
+            const accessToken = await userCredentials.user.getIdToken();
+            console.log(accessToken);
+
+            // axios
+            //     .get("http://localhost:3000/auth/login", {
+            //         headers: {
+            //             Authorization: `Bearer ${accessToken}`,
+            //         },
+            //     })
+            //     .then((res: any) => {
+            //         console.log(res);
+            //         localStorage.setItem("user", JSON.stringify(res.data.body));
+            //         navigate("/dashboard");
+            //     });
+        } catch (error: any) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         if (localStorage.getItem("user")) {
             navigate("/dashboard");
@@ -40,7 +63,7 @@ const HomePage = () => {
                 <div className="px-6 sm:px-0 max-w-sm">
                     <button
                         onClick={() => {
-                            void handleSignIn();
+                            void handleGoogleSignIn();
                         }}
                         type="button"
                         className="text-[#080808] w-full border border-[#f4f5f0]  bg-white hover:bg-[#F4F5F0]/90 focus:ring-4 focus:outline-none focus:ring-[#F4F5F0]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-between dark:focus:ring-[#F4F5F0]/55 mr-2 mb-2"
@@ -57,7 +80,7 @@ const HomePage = () => {
                 <div className="px-6 sm:px-0 max-w-sm">
                     <button
                         onClick={() => {
-                            void handleSignIn();
+                            void handleFacebookSignIn();
                         }}
                         type="button"
                         className="text-white w-full  bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-between dark:focus:ring-[#4285F4]/55 mr-2 mb-2"
